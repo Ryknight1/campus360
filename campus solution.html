@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campus360 — Your campus, in sync</title>
+<style>
+:root{--ink:#20233a;--muted:#73768d;--bg:#f6f5ff;--card:#fff;--purple:#7566f5;--purple2:#a89cff;--pink:#ff8eb7;--mint:#b9f2df;--yellow:#ffe69a;--line:#ecebfa;--soft:#f0eeff;--red:#ff4d6a;--orange:#ff9a3d;--green:#18a56f;--shadow:0 12px 35px #38305c10;--sidebar:#fff;--input:#fcfcff}
+[data-theme=dark]{--ink:#ecebff;--muted:#9a9cc0;--bg:#12121f;--card:#1c1c2e;--line:#2a2a42;--soft:#272647;--shadow:0 12px 35px #0006;--sidebar:#171727;--input:#20203a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-rounded,"Segoe UI",system-ui,sans-serif;transition:background .3s,color .3s}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer;border:0;position:relative;overflow:hidden}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.sidebar{background:var(--sidebar);border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px;font-weight:900;font-size:20px;letter-spacing:-.6px}
+.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;font-size:22px;box-shadow:0 7px 18px #7566f544;animation:float 4s ease-in-out infinite}
+.brand small{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1.2px}
+.navlabel{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:0 12px 8px;font-weight:800}
+.nav{display:grid;gap:4px}
+.nav button{background:transparent;color:var(--muted);text-align:left;padding:12px;border-radius:13px;font-weight:700;display:flex;gap:12px;align-items:center;transition:.18s}
+.nav button:hover{background:var(--soft);color:var(--purple);transform:translateX(3px)}
+.nav button.active{background:var(--soft);color:var(--purple);box-shadow:inset 3px 0 0 var(--purple)}
+.nav .ico{width:24px;text-align:center;font-size:18px}
+.nav .hot{margin-left:auto;font-size:9px;font-weight:900;padding:3px 7px;border-radius:99px;background:var(--red);color:#fff}
+.nav .hot.o{background:var(--orange)}
+.side-bottom{margin-top:auto;background:var(--soft);border-radius:18px;padding:15px;font-size:12px;color:var(--muted);line-height:1.5}
+.main{min-width:0;padding:26px clamp(16px,3vw,42px) 110px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+.eyebrow{color:var(--purple);font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
+.topbar h1{font-size:clamp(23px,3vw,32px);letter-spacing:-1px;margin:5px 0}
+.top-actions{display:flex;align-items:center;gap:10px}
+.iconbtn{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;transition:.15s;position:relative}
+.iconbtn:hover{transform:translateY(-2px);border-color:var(--purple2)}
+.dot{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;border-radius:99px;background:var(--red);color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;padding:0 5px;animation:pop .4s}
+.avatar{background:var(--yellow);color:#20233a;border-radius:14px;padding:10px 13px;font-weight:900}
+.welcome{position:relative;overflow:hidden;border-radius:26px;padding:28px;color:#fff;background:linear-gradient(115deg,#6c5cf0,#9a8cff 70%,#b8a9ff);box-shadow:0 16px 35px #7767ee30;display:flex;justify-content:space-between;gap:18px;align-items:center}
+.welcome:after{content:'✦';position:absolute;font-size:170px;right:10%;top:-48px;color:#ffffff18;animation:spin 30s linear infinite}
+.welcome h2{font-size:clamp(23px,3vw,32px);margin:10px 0;line-height:1.2}
+.welcome p{color:#eeebff;max-width:460px;margin:0 0 18px;line-height:1.55}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:7px 12px;font-size:11px;font-weight:800;background:#ffffff26;color:inherit}
+.welcome-art{font-size:72px;min-width:110px;text-align:center;z-index:1;animation:float 3.5s ease-in-out infinite}
+.btn{border-radius:13px;padding:12px 17px;font-weight:800;transition:.18s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.primary{background:var(--purple);color:#fff;box-shadow:0 7px 15px #7566f535}
+.whitebtn{background:#fff;color:var(--purple)}
+.softbtn{background:var(--soft);color:var(--purple)}
+.danger{background:#fff0f2;color:#d64d6c}
+[data-theme=dark] .danger{background:#3a2030}
+.ghost{background:transparent;border:1px solid var(--line)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:28px 0 14px}
+.sectionhead h3{margin:0;font-size:18px;letter-spacing:-.4px}
+.sectionhead span{font-size:12px;color:var(--muted)}
+/* featured cards */
+.featured{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.feat{position:relative;overflow:hidden;border-radius:24px;padding:22px;color:#fff;text-align:left;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;transition:.25s;box-shadow:0 14px 32px #0002}
+.feat:hover{transform:translateY(-4px) scale(1.01)}
+.feat .big{position:absolute;right:14px;bottom:-6px;font-size:90px;opacity:.28;transition:.3s}
+.feat:hover .big{transform:scale(1.15) rotate(-6deg);opacity:.4}
+.feat h3{margin:10px 0 6px;font-size:21px;letter-spacing:-.5px}
+.feat p{margin:0;font-size:13px;opacity:.92;line-height:1.5;max-width:260px}
+.feat .tag{display:inline-flex;align-self:flex-start;gap:6px;font-size:10px;font-weight:900;letter-spacing:1px;padding:6px 11px;border-radius:99px;background:#ffffff30}
+.feat.sos{background:linear-gradient(135deg,#ff3d5e,#ff7a8c)}
+.feat.sos:before{content:'';position:absolute;inset:0;border-radius:24px;border:3px solid #fff;opacity:0;animation:ring 2s infinite}
+.feat.sports{background:linear-gradient(135deg,#ff8a3d,#ffb347)}
+.feat .go{font-weight:900;font-size:13px;margin-top:12px}
+.actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.action{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:17px 14px;text-align:left;min-height:118px;box-shadow:var(--shadow);transition:.2s;color:var(--ink)}
+.action:hover{transform:translateY(-4px);border-color:var(--purple2)}
+.action .emoji{width:43px;height:43px;display:grid;place-items:center;border-radius:15px;font-size:22px;margin-bottom:12px;transition:.25s}
+.action:hover .emoji{transform:scale(1.15) rotate(-6deg)}
+.action strong{display:block;font-size:13px}.action small{display:block;color:var(--muted);margin-top:5px;font-size:11px}
+.lav{background:#f0edff}.peach{background:#fff0e5}.mint{background:#e2fbf1}.pink{background:#ffedf4}.yellow{background:#fff7d9}
+[data-theme=dark] .lav,[data-theme=dark] .peach,[data-theme=dark] .mint,[data-theme=dark] .pink,[data-theme=dark] .yellow{background:#2b2b48}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:17px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.panel h3{margin:0 0 5px;font-size:16px}
+.sub{color:var(--muted);font-size:12px;margin-bottom:16px;line-height:1.5}
+.briefitem{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.briefitem:first-of-type{border-top:0}
+.miniicon{width:38px;height:38px;display:grid;place-items:center;background:var(--soft);border-radius:13px;font-size:18px;flex-shrink:0}
+.grow{flex:1;min-width:0}.grow strong{display:block;font-size:13px}.grow small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.status{padding:6px 10px;border-radius:9px;font-size:10px;font-weight:900;white-space:nowrap;background:#fff2cf;color:#a47613}
+.status.good{background:#e0f9ed;color:#18865b}.status.bad{background:#ffedf1;color:#c64d6a;animation:blink 1.4s infinite}
+.hidden{display:none!important}
+.page{animation:fade .3s ease}
+.cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:17px;transition:.2s}
+.stat:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.stat .num{font-size:27px;font-weight:900;letter-spacing:-1px}.stat p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.field{display:grid;gap:7px;margin:12px 0}
+.field label{font-size:12px;font-weight:800;color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--input);padding:12px 13px;border-radius:12px;outline:none;transition:.15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--purple);box-shadow:0 0 0 3px #7566f524}
+.field textarea{min-height:90px;resize:vertical}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.notice{background:#fff8df;border:1px solid #f7e6a8;color:#84681b;padding:12px 14px;border-radius:13px;font-size:12px;line-height:1.5;margin:12px 0}
+[data-theme=dark] .notice{background:#34301c;border-color:#51471f;color:#e8d38b}
+.record{background:var(--soft);border-radius:14px;padding:13px;margin-top:10px;font-size:13px;animation:fade .3s}
+.record strong{display:block;margin-bottom:5px}.record small{color:var(--muted)}
+.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+/* chips */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--card);border:1.5px solid var(--line);border-radius:99px;padding:9px 14px;font-size:12px;font-weight:800;color:var(--muted);transition:.15s}
+.chip:hover{border-color:var(--purple2);color:var(--purple)}
+.chip.on{background:var(--soft);color:var(--purple);border-color:var(--purple)}
+.chip.urgent.on{background:#fff0f2;color:var(--red);border-color:var(--red)}
+.chip.soon.on{background:#fff6e6;color:#d9822b;border-color:var(--orange)}
+/* sos */
+.sosbanner{position:relative;overflow:hidden;background:linear-gradient(135deg,#ff3d5e,#ff7a8c);color:#fff;border-radius:24px;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 14px 34px #ff3d5e40}
+.sosbanner h3{margin:0 0 6px;font-size:21px}.sosbanner p{margin:0;font-size:13px;line-height:1.55;opacity:.95;max-width:480px}
+.sosbtn{background:#fff;color:#e0334f;font-weight:900;border-radius:99px;padding:16px 24px;font-size:15px;white-space:nowrap;animation:pulse 1.8s infinite}
+.helpline{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.helpline a{text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center;color:var(--ink);font-size:12px;font-weight:800;transition:.18s}
+.helpline a:hover{transform:translateY(-3px);border-color:var(--red)}
+.helpline b{display:block;font-size:19px;color:var(--red);margin-bottom:3px}
+/* fab */
+.fab{position:fixed;right:20px;bottom:24px;z-index:15;background:linear-gradient(135deg,#ff3d5e,#ff7a8c);color:#fff;font-weight:900;border-radius:99px;padding:14px 20px;box-shadow:0 10px 26px #ff3d5e66;animation:pulse 2s infinite;display:flex;align-items:center;gap:8px}
+/* sports */
+.sportgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.sport{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px;text-align:left;transition:.2s;color:var(--ink)}
+.sport:hover{transform:translateY(-4px);border-color:#ffc58f}
+.sport.sel{border-color:var(--orange);background:linear-gradient(160deg,#fff7ee,transparent);box-shadow:0 10px 24px #ff9a3d2e}
+[data-theme=dark] .sport.sel{background:linear-gradient(160deg,#3a2c1c,transparent)}
+.sport .emoji{font-size:34px;display:block;margin-bottom:8px;transition:.3s}
+.sport:hover .emoji,.sport.sel .emoji{transform:scale(1.2) rotate(-8deg)}
+.sport strong{display:block;font-size:14px}.sport small{color:var(--muted);font-size:11px}
+.bar{height:6px;border-radius:9px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--orange),#ffcf70);transition:width .5s}
+.slotgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.slot{border:2px solid var(--line);border-radius:18px;padding:15px;background:var(--card);text-align:left;transition:.2s;color:var(--ink)}
+.slot strong{display:block;margin:8px 0 5px;font-size:15px}.slot small{color:var(--muted)}
+.slot.free{border-color:#bcebd8}.slot.free:hover{transform:translateY(-3px);background:#f3fff9}
+[data-theme=dark] .slot.free:hover{background:#1c3030}
+.slot.pick{border-color:var(--green);background:#e9fbf2;box-shadow:0 8px 22px #18a56f2a}
+[data-theme=dark] .slot.pick{background:#17352b}
+.slot.booked{background:var(--soft);opacity:.65;cursor:not-allowed}
+.slotbadge{font-size:10px;font-weight:900;color:var(--green)}.slot.booked .slotbadge{color:#a3a1b3}
+.tick{font-size:34px;display:block;text-align:center}
+.code{font-size:30px;font-weight:900;letter-spacing:6px;text-align:center;background:var(--soft);border-radius:16px;padding:14px;margin:12px 0;color:var(--purple)}
+/* stepper */
+.steps{display:flex;align-items:center;margin:14px 0 4px}
+.step{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;font-weight:800;color:var(--muted);flex:0 0 auto}
+.step i{width:24px;height:24px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-style:normal;font-size:11px;color:var(--muted);transition:.3s}
+.step.done i{background:var(--green);color:#fff}.step.done{color:var(--green)}
+.step.cur i{background:var(--purple);color:#fff;box-shadow:0 0 0 5px #7566f52a}
+.stepline{height:3px;background:var(--line);flex:1;margin:0 4px 16px;border-radius:9px}.stepline.done{background:var(--green)}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:6px 0 4px}
+/* ring */
+.ringwrap{display:flex;align-items:center;gap:16px}
+.ring{position:relative;width:110px;height:110px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:22px}
+.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring .bg{stroke:var(--line)}.ring .fg{stroke:var(--purple);transition:stroke-dashoffset 1s ease}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:26px;background:#24233b;color:#fff;border-radius:14px;padding:14px 18px;box-shadow:0 10px 30px #0004;z-index:50;max-width:min(400px,calc(100vw - 32px));font-size:13px;animation:slideup .3s}
+.mobile-nav{display:none}
+.loginwrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 15% 15%,#e7e1ff,transparent 35%),radial-gradient(circle at 90% 85%,#ffe2ef,transparent 30%),var(--bg);position:relative;overflow:hidden}
+[data-theme=dark] .loginwrap{background:radial-gradient(circle at 15% 15%,#2c2757,transparent 35%),radial-gradient(circle at 90% 85%,#40233a,transparent 30%),var(--bg)}
+.blob{position:absolute;border-radius:50%;filter:blur(50px);opacity:.5;animation:float 8s ease-in-out infinite}
+.login{position:relative;width:min(450px,100%);background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 25px 70px #39305c22;animation:fade .5s}
+.login h1{font-size:29px;letter-spacing:-1px;margin:20px 0 7px}
+.login p{font-size:13px;color:var(--muted);line-height:1.6}
+.login .btn{width:100%;margin-top:9px}
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:15px 0}
+.divider:before,.divider:after{content:'';height:1px;background:var(--line);flex:1}
+.rolegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rolegrid button{border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:10px 4px;font-size:11px;font-weight:800;display:grid;gap:4px;justify-items:center;transition:.18s}
+.rolegrid button span{font-size:22px}
+.rolegrid button:hover{transform:translateY(-3px)}
+.rolegrid button.selected{background:var(--soft);color:var(--purple);border-color:var(--purple)}
+.pwrap{position:relative}.pwrap button{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;padding:6px}
+.qrbox{width:150px;height:150px;border:8px solid #fff;box-shadow:0 0 0 1px var(--line);border-radius:12px;margin:14px auto;background:repeating-conic-gradient(#24233b 0 25%,#fff 0 50%) 0/16px 16px;position:relative}
+.qrbox:after{content:'C360';position:absolute;inset:40px;background:#fff;color:#24233b;border:4px solid #24233b;display:grid;place-items:center;font-weight:900;font-size:20px}
+.muted{color:var(--muted)}
+.confetti{position:fixed;top:-20px;z-index:60;font-size:22px;pointer-events:none;animation:fall 2.2s ease-in forwards}
+.ripple{position:absolute;border-radius:50%;background:#ffffff66;transform:scale(0);animation:rip .6s linear;pointer-events:none}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #ff3d5e77}70%{box-shadow:0 0 0 16px #ff3d5e00}100%{box-shadow:0 0 0 0 #ff3d5e00}}
+@keyframes ring{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
+@keyframes blink{50%{opacity:.55}}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes slideup{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+@media(max-width:1050px){.actions{grid-template-columns:repeat(3,minmax(0,1fr))}.grid2{grid-template-columns:1fr}.cards3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.app{display:block}.sidebar{display:none}.main{padding:18px 14px 110px}.topbar h1{font-size:24px}.welcome{padding:21px;border-radius:21px}.welcome-art{font-size:48px;min-width:55px}.welcome p{font-size:13px}.featured{grid-template-columns:1fr}.feat{min-height:150px}.actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.action:last-child{grid-column:span 2}.cards3{grid-template-columns:repeat(2,minmax(0,1fr))}.sportgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.slotgrid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.helpline{grid-template-columns:1fr}.sosbanner{flex-direction:column;align-items:flex-start}.sosbtn{width:100%}.fab{bottom:80px;right:14px;padding:12px 16px}.toast{bottom:90px}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom));z-index:10}.mobile-nav button{background:transparent;color:var(--muted);font-size:10px;display:grid;gap:4px;justify-items:center;min-width:50px;font-weight:800}.mobile-nav button span{font-size:19px}.mobile-nav button.active{color:var(--purple)}.panel{padding:16px}}
+
+/* Minimal, clean interface */
+:root{--bg:#f5f6f8;--card:#fff;--purple:#315efb;--purple2:#9bb4ff;--pink:#f2f4f7;--mint:#e8f5ee;--yellow:#f3f4f6;--soft:#eef2ff;--line:#e2e5eb;--shadow:none;--sidebar:#fff;--input:#fff;--red:#d92d3a;--orange:#b85c00;--green:#16845b}
+[data-theme=dark]{--bg:#111318;--card:#1a1d24;--ink:#f1f3f5;--muted:#a0a6b2;--line:#303540;--soft:#242d43;--sidebar:#171a20;--input:#20242c;--shadow:none}
+*{scroll-behavior:smooth}
+body{font-family:Arial,Helvetica,sans-serif;transition:none}
+.logo,.welcome,.feat,.sosbanner,.fab,.loginwrap{background:var(--card)!important;color:var(--ink)!important;box-shadow:none!important}
+.logo{border-radius:10px;background:#315efb!important;color:white!important;animation:none!important}
+.welcome{border:1px solid var(--line);border-radius:16px;padding:22px}
+.welcome p{color:var(--muted)!important}
+.welcome:after,.blob,.welcome-art,.feat .big,.feat:before{display:none!important;content:none!important;animation:none!important}
+.feat{border:1px solid var(--line);border-radius:14px;color:var(--ink)!important;min-height:135px}
+.feat p,.feat .tag{color:var(--muted)!important;background:transparent!important}
+.feat h3{font-size:18px}
+.btn,.action,.panel,.stat,.sport,.slot,.record,.iconbtn,.nav button,.helpline a,.login{border-radius:10px;box-shadow:none!important;transition:none!important}
+.btn:hover,.action:hover,.sport:hover,.slot:hover,.feat:hover,.iconbtn:hover,.nav button:hover,.helpline a:hover,.stat:hover{transform:none!important}
+.action{min-height:100px}
+.sosbanner{border:1px solid var(--line);border-radius:12px}
+.sosbtn{animation:none!important;border:1px solid var(--line)}
+.fab{animation:none!important;border:1px solid var(--line);background:var(--red)!important;color:#fff!important}
+.status.bad,.dot,.confetti,.ripple{animation:none!important}
+button{overflow:visible}
+.chip.on,.sport.sel,.slot.pick{background:var(--soft)!important}
+.slot.free{border-color:var(--line)}
+.bar i{background:var(--purple)}
+.loginwrap{background:var(--bg)!important}
+.login{border-radius:14px}
+.pill{background:#eef2ff!important;color:#315efb!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style></head>
+<body>
+<div id="loginScreen" class="loginwrap">
+<div class="blob" style="width:260px;height:260px;background:#b8a9ff;top:-60px;left:-60px"></div>
+<div class="blob" style="width:220px;height:220px;background:#ffb3cf;bottom:-50px;right:-40px;animation-delay:2s"></div>
+<div class="login">
+<div class="brand" style="padding:0"><div class="logo">✦</div><div>Campus360<small>YOUR CAMPUS, IN SYNC</small></div></div>
+<h1 id="authTitle">Welcome back 👋</h1>
+<p id="authSub">Demo mode: sign in to try the campus features.</p>
+<button class="btn" style="background:var(--card);border:1px solid var(--line);color:var(--ink)" onclick="googleDemo()">🌐 Continue with demo account</button>
+<div class="divider">OR USE A DEMO EMAIL</div>
+<div class="field"><label>Email address</label><input id="email" type="email" placeholder="you@college.edu"></div>
+<div class="field"><label>Password</label><div class="pwrap"><input id="password" type="password" placeholder="At least 8 characters" onkeydown="if(event.key==='Enter')authSubmit()"><button type="button" onclick="togglePw()" aria-label="Show password">👁️</button></div></div>
+<div id="signupExtra" class="hidden">
+<div class="field"><label>Your name</label><input id="newName" placeholder="e.g. Aanya Sharma"></div>
+<div class="field"><label>College roll number</label><input id="newRoll" placeholder="e.g. 26EC104"></div>
+<div class="field"><label>Branch</label><select id="newBranch"><option>Electronics & Communication</option><option>Computer Science</option><option>AI & Machine Learning</option><option>Electrical Engineering</option><option>Mechanical Engineering</option><option>Other</option></select></div>
+</div>
+<div class="field"><label>I am a…</label>
+<div class="rolegrid" id="rolechips">
+<button class="selected" onclick="chooseRole('Student',this)"><span>🎒</span>Student</button>
+<button onclick="chooseRole('Warden',this)"><span>🛡️</span>Warden</button>
+<button onclick="chooseRole('Faculty',this)"><span>📚</span>Faculty</button>
+<button onclick="chooseRole('Admin',this)"><span>⚙️</span>Admin</button>
+</div></div>
+<button class="btn primary" id="authSubmit" onclick="authSubmit()">Sign in →</button>
+<p style="text-align:center;margin-bottom:0"><span id="switchText">New here?</span> <button onclick="toggleAuth()" id="switchBtn" style="background:none;color:var(--purple);font-weight:900">Create account</button></p>
+</div></div>
+
+<div id="app" class="app hidden">
+<aside class="sidebar">
+<div class="brand"><div class="logo">✦</div><div>Campus360<small>YOUR CAMPUS, IN SYNC</small></div></div>
+<div><div class="navlabel">Workspace</div><div class="nav" id="sideNav"></div></div>
+<div class="side-bottom">🌱 <b>Small actions, greener campus.</b><br>Every checked light is a tiny win for everyone.</div>
+<button class="btn ghost" style="text-align:left;color:var(--muted)" onclick="toggleTheme()" id="themeBtn">🌙 Dark mode</button>
+<button class="btn ghost" style="text-align:left;color:var(--muted)" onclick="logout()">↪ Sign out</button>
+</aside>
+<main class="main">
+<header class="topbar">
+<div><div class="eyebrow" id="todayLabel"></div><h1 id="pageTitle"></h1></div>
+<div class="top-actions">
+<button class="iconbtn" onclick="toggleTheme()" aria-label="Theme" id="themeTop">🌙</button>
+<button class="iconbtn" onclick="navigate('notifications')" aria-label="Notifications">🔔<span class="dot hidden" id="notifCount">0</span></button>
+<button class="avatar" id="avatar">AS</button>
+</div>
+</header>
+<div id="pageContent" class="page"></div>
+</main>
+<nav class="mobile-nav" id="mobileNav"></nav>
+<button class="fab hidden" id="sosFab" onclick="emergencyHelp()">🚨 SOS</button>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let role='Student',isSignup=false,user={name:'Aanya Sharma',email:'aanya@campus.demo',roll:'26EC104',branch:'Electronics & Communication'},currentPage='home',toastTimer,theme='light';
+let requests=[{id:'GP-1042',type:'Gate pass',title:'Evening outing',status:'Pending',detail:'Today · 6:15 PM – 8:30 PM'},{id:'MT-2031',type:'Maintenance',title:'Room fan making noise',status:'In progress',detail:'Block B · Room 204'}];
+let passes=[{id:'GP-1041',name:'Rohan Das',roll:'26CS022',branch:'Computer Science',reason:'Medical appointment',depart:'5:30 PM',return:'8:00 PM',status:'Approved',outside:false}];
+let equipment=[{name:'Badminton racket',emoji:'🏸',qty:6,condition:'Good'},{name:'Football',emoji:'⚽',qty:3,condition:'Great'},{name:'Cricket bat',emoji:'🏏',qty:4,condition:'Good'},{name:'Basketball',emoji:'🏀',qty:2,condition:'Good'},{name:'Carrom board',emoji:'🎯',qty:2,condition:'Great'},{name:'Table tennis set',emoji:'🏓',qty:5,condition:'Good'}];
+const SLOTS=['5:00–7:00 PM','7:00–9:00 PM'];
+let bookings=[{id:'BK-401',item:'Badminton racket',slot:'6:00–7:00 PM',date:'Today',name:'Ishita Roy',roll:'26AI018',branch:'AI & Machine Learning',status:'Booked',code:'4827'}];
+let tickets=[{id:'MT-2031',title:'Room fan making noise',category:'Electrical',room:'Block B · Room 204',priority:'Medium',status:'In progress',by:'Aanya Sharma'}];
+let medical=[];
+let energy=[{room:'Lecture Hall 2',detail:'Class ended at 4:00 PM · reported check pending',status:'Needs check'}];
+let notices=[{title:'Your evening pass needs review',detail:'Gate pass · Waiting for warden',emoji:'🪪',read:false},{title:'Sports slots open!',detail:'Pick your game time for today',emoji:'🏸',read:false},{title:'Green campus check-in',detail:'Help verify rooms after class',emoji:'🌱',read:false}];
+let selItem=0,selSlot=null,issueFilter='All',medUrgency='Routine',medKind='Medical assistance';
+const classes=[[9,10,'Engineering Mathematics','Room A-204','📐'],[10,11,'Programming in C','Lab 2','💻'],[12,13,'Introduction to AI','Room B-102','🤖'],[14,15,'Engineering Physics','Lab 1','⚡']];
+const navItems=[['home','⌂','Home'],['passes','🪪','Gate pass'],['sports','🏸','Sports','Hot','o'],['medical','🩺','Medical help','SOS'],['timetable','🗓️','Timetable'],['issues','🛠️','Campus issues'],['energy','🌱','Green campus'],['notifications','🔔','Notifications']];
+
+/* ---------- helpers ---------- */
+function toast(msg,icon='✨'){const t=$('toast');t.textContent=icon+'  '+msg;t.classList.remove('hidden');t.style.animation='none';void t.offsetWidth;t.style.animation='';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),3000)}
+function confetti(list=['🎉','✨','🏸','⚽','🎊','⭐']){}
+function statusClass(s){return ['Approved','Returned','Resolved','Checked — Everything Off','Booked','Checked out'].includes(s)?'good':['Rejected','Overdue','Urgent','Reported still running'].includes(s)||/ALERT/.test(s)?'bad':''}
+function brief(title,detail,emoji,status=''){return `<div class="briefitem"><div class="miniicon">${emoji}</div><div class="grow"><strong>${title}</strong><small>${detail}</small></div>${status?`<span class="status ${statusClass(status)}">${status}</span>`:''}</div>`}
+function countUp(){document.querySelectorAll('[data-count]').forEach(el=>{const end=parseFloat(el.dataset.count),dec=(el.dataset.dec|0),suf=el.dataset.suf||'',pre=el.dataset.pre||'';let t0=null;const step=ts=>{if(!t0)t0=ts;const p=Math.min((ts-t0)/700,1),v=end*(1-Math.pow(1-p,3));el.textContent=pre+v.toFixed(dec)+suf;if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});document.querySelectorAll('.fg[data-pct]').forEach(c=>{const r=+c.getAttribute('r'),C=2*Math.PI*r;c.style.strokeDasharray=C;c.style.strokeDashoffset=C;setTimeout(()=>c.style.strokeDashoffset=C*(1-c.dataset.pct/100),60)})}
+function ring(pct,label,color){return `<div class="ring"><svg width="110" height="110"><circle class="bg" cx="55" cy="55" r="46"/><circle class="fg" cx="55" cy="55" r="46" data-pct="${pct}" ${color?`style="stroke:${color}"`:''}/></svg><b>${label}</b></div>`}
+function unread(){return notices.filter(n=>!n.read).length}
+function updateBadge(){const n=unread(),b=$('notifCount');b.textContent=n;b.classList.toggle('hidden',!n)}
+function modal(title,body){closeModal();const d=document.createElement('div');d.id='modalLayer';d.style.cssText='position:fixed;inset:0;background:#211b3b88;display:grid;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(4px)';d.onclick=e=>{if(e.target===d)closeModal()};d.innerHTML=`<div style="background:var(--card);border-radius:24px;padding:22px;width:min(450px,100%);max-height:90vh;overflow:auto;box-shadow:0 30px 90px #0004;animation:fade .25s"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="margin:0">${title}</h3><button class="iconbtn" onclick="closeModal()">✕</button></div>${body}</div>`;document.body.appendChild(d)}
+function closeModal(){const m=$('modalLayer');if(m)m.remove()}
+function toggleTheme(){theme=theme==='light'?'dark':'light';document.documentElement.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️ Light mode':'🌙 Dark mode';$('themeTop').textContent=theme==='dark'?'☀️':'🌙'}
+function togglePw(){const p=$('password');p.type=p.type==='password'?'text':'password'}
+
+/* ---------- auth ---------- */
+function chooseRole(r,el){role=r;document.querySelectorAll('#rolechips button').forEach(b=>b.classList.remove('selected'));el.classList.add('selected')}
+function toggleAuth(){isSignup=!isSignup;$('authTitle').textContent=isSignup?'Make campus yours 🌈':'Welcome back 👋';$('authSub').textContent=isSignup?'A few details and you’re in.':'Demo mode: sign in to try the campus features.';$('signupExtra').classList.toggle('hidden',!isSignup);$('authSubmit').textContent=isSignup?'Create my account →':'Sign in →';$('switchText').textContent=isSignup?'Already have an account?':'New here?';$('switchBtn').textContent=isSignup?'Sign in':'Create account'}
+function authSubmit(){const email=$('email').value.trim(),pass=$('password').value;if(!email||!pass){toast('Add your email and password to continue.','⚠️');return}if(isSignup){if(pass.length<8){toast('Use a password with 8+ characters.','⚠️');return}user.name=$('newName').value.trim()||'Campus Student';user.roll=$('newRoll').value.trim()||'26ST001';user.branch=$('newBranch').value}else{user.name=email.split('@')[0].replace(/[._-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());user.roll='26EC104';user.branch='Electronics & Communication'}user.email=email;enterApp()}
+function googleDemo(){user={name:'Aanya Sharma',email:'aanya@campus.demo',roll:'26EC104',branch:'Electronics & Communication'};toast('Signing you in…','🌐');setTimeout(enterApp,650)}
+function logout(){$('app').classList.add('hidden');$('loginScreen').classList.remove('hidden')}
+function enterApp(){$('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');$('avatar').textContent=(user.name.split(' ').map(s=>s[0]).join('').slice(0,2)||'C').toUpperCase();$('sosFab').classList.toggle('hidden',role!=='Student');buildNav();navigate('home');updateBadge();confetti(['✨','🎒','🌟'])}
+function allowed(){return role==='Student'?navItems:role==='Warden'?[0,1,2,3,5,7].map(i=>navItems[i]):role==='Faculty'?[0,4,6,7].map(i=>navItems[i]):[...navItems,['admin','⚙️','Admin tools']]}
+function buildNav(){const a=allowed();$('sideNav').innerHTML=a.map(n=>`<button data-page="${n[0]}" onclick="navigate('${n[0]}')"><span class="ico">${n[1]}</span>${n[2]}${n[3]?`<span class="hot ${n[4]||''}">${n[3]}</span>`:''}</button>`).join('');$('mobileNav').innerHTML=a.slice(0,5).map(n=>`<button data-page="${n[0]}" onclick="navigate('${n[0]}')"><span>${n[1]}</span>${n[2].split(' ')[0]}</button>`).join('')}
+function navigate(page){currentPage=page;document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));const titles={home:greet(),passes:role==='Warden'?'Gate pass control 🪪':'Your gate passes 🪪',sports:'Pick your playtime 🏸',medical:'We’re here for you 💗',timetable:'Your day at a glance 🗓️',issues:'Let’s fix that 🛠️',energy:'Little green wins 🌱',notifications:'Your notifications 🔔',admin:'Campus control room ⚙️'};$('pageTitle').textContent=titles[page]||'Campus360';$('todayLabel').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric'}).toUpperCase();const fn={home:homePage,passes:passesPage,sports:sportsPage,medical:medicalPage,timetable:timetablePage,issues:issuesPage,energy:energyPage,notifications:notificationsPage,admin:adminPage};const pc=$('pageContent');pc.style.animation='none';void pc.offsetWidth;pc.style.animation='';pc.innerHTML=(fn[page]||homePage)();window.scrollTo({top:0,behavior:'smooth'});countUp();updateBadge()}
+function greet(){const h=new Date().getHours();return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+', '+esc(user.name.split(' ')[0])+'! ✨'}
+
+/* ---------- home ---------- */
+function nextClass(){const now=new Date(),h=now.getHours()+now.getMinutes()/60;const n=classes.find(c=>c[0]>h);if(!n)return 'All classes done for today 🎉';const m=Math.round((n[0]-h)*60);return `Next: ${n[2]} in ${m>=60?Math.floor(m/60)+'h '+(m%60)+'m':m+' min'}`}
+function classStatus(c){const now=new Date(),h=now.getHours()+now.getMinutes()/60;return h>=c[1]?'Done':h>=c[0]?'Now':'Upcoming'}
+function fmt(h){const hh=h>12?h-12:h;return hh+':00 '+(h>=12?'PM':'AM')}
+function homePage(){
+const free=SLOTS.length*equipment.length-bookings.length,pending=requests.filter(r=>r.status==='Pending').length;
+const done=classes.filter(c=>classStatus(c)==='Done').length;
+return `<section class="welcome"><div><span class="pill">✦ YOUR SMART CAMPUS COMPANION</span><h2>Ready for a good day, ${esc(user.name.split(' ')[0])}?</h2><p>${nextClass()}. Classes, campus life and little wins — all in one happy place.</p><button class="btn whitebtn" onclick="navigate('timetable')">See my day →</button></div><div class="welcome-art">🎒✨</div></section>
+<div class="featured">
+<button class="feat sos" onclick="navigate('medical')"><div><span class="tag">🚨 EMERGENCY · 24×7</span><h3>Medical help</h3><p>Feeling unwell or need support? Reach the warden in one tap.</p></div><div class="go">Get help now →</div><span class="big">🩺</span></button>
+<button class="feat sports" onclick="navigate('sports')"><div><span class="tag">🔥 POPULAR TODAY</span><h3>Sports booking</h3><p>${free} game slots open this evening. Grab yours before they’re gone!</p></div><div class="go">Book a slot →</div><span class="big">🏸</span></button>
+</div>
+<div class="sectionhead"><h3>More for you</h3><span>One tap to get started</span></div>
+<div class="actions">
+<button class="action" onclick="navigate('passes')"><div class="emoji lav">🪪</div><strong>Apply for Gate Pass</strong><small>Quick & paperless</small></button>
+<button class="action" onclick="navigate('timetable')"><div class="emoji mint">🗓️</div><strong>View Timetable</strong><small>What’s next today?</small></button>
+<button class="action" onclick="navigate('issues')"><div class="emoji yellow">🛠️</div><strong>Report a Campus Issue</strong><small>Help us fix it</small></button>
+</div>
+<div class="sectionhead"><h3>Your daily brief 🌤️</h3><span>Made just for you</span></div>
+<div class="grid2"><section class="panel"><div class="ringwrap">${ring(Math.round(done/classes.length*100),done+'/'+classes.length)}<div><h3>Today’s progress</h3><div class="sub" style="margin:0">${done} of ${classes.length} classes done.<br>${nextClass()}</div></div></div>
+<div style="margin-top:12px">${classes.slice(0,3).map(c=>brief(c[2],fmt(c[0])+' · '+c[3],c[4],classStatus(c))).join('')}${brief('Gate pass request','Waiting for warden approval','🪪','Pending')}${brief('Green check-in','Hall 2 may need an electricity check','🌱','Action')}</div></section>
+<section class="panel"><h3>Campus snapshot</h3><div class="sub">Live from your session</div><div class="cards3" style="grid-template-columns:1fr 1fr;gap:10px"><div class="stat"><div class="num" data-count="${pending}">0</div><p>Pending requests</p></div><div class="stat"><div class="num" data-count="${bookings.length}">0</div><p>Sports bookings</p></div><div class="stat"><div class="num" data-count="2.4" data-dec="1" data-suf=" kWh">0</div><p>Estimated savings</p></div><div class="stat"><div class="num" data-count="${greenScore()}" data-pre="🌿 ">0</div><p>Green score / 100</p></div></div></section></div>`}
+
+/* ---------- gate pass ---------- */
+function stepper(status){const idx={Pending:1,Approved:2,Outside:3,Returned:4,Rejected:1}[status]||1;const labels=['Sent','Review','Approved','Used'];return `<div class="steps">${labels.map((l,i)=>`<div class="step ${i<idx-0&&i<idx?'done':''} ${i===idx&&status!=='Rejected'?'cur':''}"><i>${i<idx?'✓':i+1}</i>${l}</div>${i<3?`<div class="stepline ${i<idx-0&&i+1<=idx?'done':''}"></div>`:''}`).join('')}</div>`}
+function passesPage(){
+if(role==='Warden'||role==='Admin')return `<div class="cards3"><div class="stat"><div class="num" data-count="${passes.length+requests.filter(x=>x.type==='Gate pass').length}">0</div><p>Total pass records</p></div><div class="stat"><div class="num" data-count="${requests.filter(r=>r.type==='Gate pass'&&r.status==='Pending').length}">0</div><p>Need review</p></div><div class="stat"><div class="num" data-count="${passes.filter(p=>p.outside).length}">0</div><p>Currently outside</p></div></div><section class="panel" style="margin-top:16px"><h3>Pass requests</h3><div class="sub">Review requests and record gate events.</div>${requests.filter(r=>r.type==='Gate pass').map(r=>`<div class="record"><strong>${esc(r.title)} <span class="status ${statusClass(r.status)}">${r.status}</span></strong><small>${r.id} · ${esc(r.detail)}</small>${r.status==='Pending'?`<div class="btnrow"><button class="btn primary" onclick="approveRequest('${r.id}')">✓ Approve</button><button class="btn danger" onclick="rejectRequest('${r.id}')">Reject</button></div>`:''}</div>`).join('')}${passes.map(p=>`<div class="record"><strong>${esc(p.name)} · ${esc(p.reason)} <span class="status ${statusClass(p.status)}">${p.status}</span></strong><small>${esc(p.roll)} · Return by ${p.return} · ${p.outside?'Marked outside':'Not checked out'}</small><div class="btnrow"><button class="btn softbtn" onclick="showQR('${p.id}')">View QR</button>${p.status!=='Returned'?`<button class="btn primary" onclick="gateEvent('${p.id}')">${p.outside?'Record return':'Record departure'}</button><button class="btn ghost" onclick="extendPass('${p.id}')">Extend</button>`:''}</div></div>`).join('')}</section>`;
+return `<div class="grid2"><section class="panel"><h3>Apply for a gate pass ✨</h3><div class="sub">A few details and you’re good to go.</div><div class="field"><label>Departure date</label><input type="date" id="passDate" value="${new Date().toISOString().slice(0,10)}"></div><div class="formgrid"><div class="field"><label>Departure time</label><input type="time" id="passDepart" value="18:00"></div><div class="field"><label>Expected return</label><input type="time" id="passReturn" value="20:00"></div></div><div class="field"><label>Reason for leaving</label><select id="passReason"><option>Personal errand</option><option>Medical appointment</option><option>Family visit</option><option>Shopping / essentials</option><option>Other</option></select></div><div class="field"><label>Extra note (optional)</label><textarea id="passNote" placeholder="Anything the warden should know?"></textarea></div><button class="btn primary" onclick="submitPass()">Send for approval →</button></section>
+<section class="panel"><h3>My pass journey</h3><div class="sub">You’ll get a QR once the warden approves.</div>${requests.filter(r=>r.type==='Gate pass').map(r=>`<div class="record"><strong>${esc(r.title)} <span class="status ${statusClass(r.status)}">${r.status}</span></strong><small>${r.id} · ${esc(r.detail)}</small>${stepper(r.status)}${r.status==='Approved'?`<button class="btn softbtn" onclick="showQR('${r.id}')">Open pass QR</button>`:''}</div>`).join('')||'<p class="muted">No pass requests yet. Your next trip starts here.</p>'}<div class="notice">🔐 A QR code is not proof of identity. The gate operator must verify the student using approved campus procedures.</div></section></div>`}
+function submitPass(){const d=$('passDate').value,dep=$('passDepart').value,ret=$('passReturn').value;if(!d||!dep||!ret||ret<=dep){toast('Choose a return time later than departure.','⚠️');return}const id='GP-'+Math.floor(1000+Math.random()*8999);requests.unshift({id,type:'Gate pass',title:$('passReason').value,status:'Pending',detail:`${d} · ${dep} – ${ret}`});notices.unshift({title:'New gate pass request',detail:`${user.name} · ${$('passReason').value}`,emoji:'🪪',read:false});toast('Gate pass sent to the warden for review!','🪪');confetti(['🪪','✨']);navigate('passes')}
+function approveRequest(id){const r=requests.find(x=>x.id===id);if(!r)return;r.status='Approved';if(!passes.some(x=>x.id===id))passes.unshift({id:r.id,name:user.name,roll:user.roll,branch:user.branch,reason:r.title,depart:'6:00 PM',return:'8:00 PM',status:'Approved',outside:false});notices.unshift({title:'Gate pass approved ✅',detail:r.title+' · QR pass is ready',emoji:'🪪',read:false});toast('Approved. QR pass is now available.','✅');navigate('passes')}
+function rejectRequest(id){const r=requests.find(x=>x.id===id);if(r)r.status='Rejected';toast('Request rejected.','❌');navigate('passes')}
+function showQR(id){const p=passes.find(x=>x.id===id)||requests.find(x=>x.id===id);if(!p){toast('Pass not found.','⚠️');return}modal('Your digital pass',`<div style="text-align:center;padding:10px"><div class="eyebrow">CAMPUS360 · GATE PASS</div><h2>${p.id}</h2><div class="qrbox" aria-label="QR preview placeholder"></div><p class="muted" style="font-size:11px">Demo preview only — not a scannable QR code.</p><b>${esc(p.name||user.name)}</b><p class="muted">${esc(p.reason||p.title)} · Approved</p><div class="notice">QR is a visual reference only. Gate staff must verify the student’s identity.</div><button class="btn primary" onclick="closeModal()">Done</button></div>`)}
+function gateEvent(id){const p=passes.find(x=>x.id===id);if(!p){toast('Only an approved pass can be scanned.','⚠️');return}if(!['Approved','Outside'].includes(p.status)){toast('This pass is not active.','⚠️');return}p.outside=!p.outside;p.status=p.outside?'Outside':'Returned';toast((p.outside?'Departure recorded':'Return recorded')+' · '+p.name,p.outside?'🚪':'🏠');navigate('passes')}
+function extendPass(id){const p=passes.find(x=>x.id===id);if(p){p.return='9:00 PM';toast('Return time extended to 9:00 PM.','⏱️');navigate('passes')}}
+
+/* ---------- sports ---------- */
+function left(item,slot){const e=equipment.find(x=>x.name===item);return e.qty-bookings.filter(b=>b.item===item&&b.slot===slot&&b.status!=='Returned').length}
+function sportsPage(){
+const e=equipment[selItem];
+return `<section class="welcome" style="background:linear-gradient(115deg,#ff8a3d,#ffc27a);color:#4d2b0e;margin-bottom:18px"><div><span class="pill" style="background:#ffffff80;color:#7a3f10">🏆 PLAY NICE, PLAY FAIR</span><h2>Game time, your way!</h2><p style="color:#6b3a14">Pick a sport, find a free slot and save it for your crew.</p></div><div class="welcome-art">${e.emoji}</div></section>
+<div class="sectionhead" style="margin-top:6px"><h3>1 · Choose your game</h3><span>Tap to select</span></div>
+<div class="sportgrid">${equipment.map((q,i)=>{const total=SLOTS.reduce((a,s)=>a+left(q.name,s),0),max=q.qty*SLOTS.length;return `<button class="sport ${i===selItem?'sel':''}" onclick="selItem=${i};selSlot=null;navigate('sports')"><span class="emoji">${q.emoji}</span><strong>${q.name}</strong><small>${q.qty} in stock · ${q.condition}</small><div class="bar"><i style="width:${Math.round(total/max*100)}%"></i></div><small style="display:block;margin-top:5px">${total} slots free</small></button>`}).join('')}</div>
+<div class="sectionhead"><h3>2 · Pick a time for ${e.name} ⏰</h3><span>Today, 5 PM – 9 PM · 2-hour slots</span></div>
+<section class="panel"><div class="slotgrid">${SLOTS.map(s=>{const l=left(e.name,s);const b=l<=0,p=selSlot===s;return `<button class="slot ${b?'booked':p?'pick':'free'}" ${b?'disabled':`onclick="selSlot='${s}';navigate('sports')"`}><span class="slotbadge">${b?'● FULLY BOOKED':p?'✓ SELECTED':'● '+l+' LEFT'}</span><strong>${s}</strong><small>${b?'Someone got this one first':p?'Fill your details below':'Tap to reserve this time'}</small></button>`}).join('')}</div>
+${selSlot?`<div class="record" style="margin-top:16px;border:1px solid #c9f1de"><h3 style="margin:0 0 4px">Reserve ${e.name} ${e.emoji}</h3><small>${selSlot} · Today</small><div class="formgrid"><div class="field"><label>Your name</label><input id="bookName" value="${esc(user.name)}"></div><div class="field"><label>College roll number</label><input id="bookRoll" value="${esc(user.roll)}"></div></div><div class="field"><label>Branch</label><input id="bookBranch" value="${esc(user.branch)}"></div><div class="btnrow"><button class="btn primary" onclick="confirmBooking()">Confirm my slot →</button><button class="btn ghost" onclick="selSlot=null;navigate('sports')">Cancel</button></div></div>`:''}
+</section>
+<div class="sectionhead"><h3>My bookings</h3><span>${bookings.length} total</span></div>
+<section class="panel">${bookings.map(b=>`<div class="record"><strong>${equipment.find(x=>x.name===b.item).emoji} ${b.item} · ${b.slot} <span class="status ${statusClass(b.status)}">${b.status}</span></strong><small>${b.id} · ${b.date} · ${esc(b.name)} · Pickup code <b>${b.code}</b></small><div class="btnrow">${role==='Warden'?`<button class="btn primary" onclick="checkout('${b.id}')">Confirm pickup</button><button class="btn softbtn" onclick="returnItem('${b.id}')">Record return</button>`:b.status==='Booked'&&b.roll===user.roll?`<button class="btn danger" onclick="cancelBooking('${b.id}')">Cancel booking</button>`:''}</div></div>`).join('')||'<p class="muted">No bookings yet.</p>'}</section>`}
+function confirmBooking(){const e=equipment[selItem];if(left(e.name,selSlot)<=0){toast('That slot just filled up. Pick another.','⚠️');selSlot=null;navigate('sports');return}const name=$('bookName').value.trim(),roll=$('bookRoll').value.trim(),branch=$('bookBranch').value.trim();if(!name||!roll||!branch){toast('Fill in name, roll number and branch.','⚠️');return}if(bookings.some(b=>b.roll===roll&&b.slot===selSlot&&b.status==='Booked')){toast('You already have a booking for this time.','⚠️');return}const code=String(Math.floor(1000+Math.random()*9000));const b={id:'BK-'+Math.floor(100+Math.random()*899),item:e.name,slot:selSlot,date:'Today',name,roll,branch,status:'Booked',code};bookings.push(b);notices.unshift({title:'Booking confirmed',detail:`${e.name} · ${selSlot}`,emoji:e.emoji,read:false});confetti([e.emoji,'🎉','⭐']);const slot=selSlot;selSlot=null;navigate('sports');modal('You’re all set! 🎉',`<div style="text-align:center"><span class="tick">${e.emoji}</span><p class="muted">${e.name} · ${slot} · Today</p><div class="code">${code}</div><p class="muted" style="font-size:12px">Show this pickup code to the sports in-charge.</p><button class="btn primary" onclick="closeModal()">Awesome</button></div>`)}
+function cancelBooking(id){const i=bookings.findIndex(b=>b.id===id);if(i>-1){bookings.splice(i,1);toast('Booking cancelled. Slot is free again.','🗑️');navigate('sports')}}
+function checkout(id){const b=bookings.find(x=>x.id===id);if(b){b.status='Checked out';toast('Pickup recorded. Return it by the end of the slot.','✅');navigate('sports')}}
+function returnItem(id){const b=bookings.find(x=>x.id===id);if(b){b.status='Returned';toast('Thanks for returning the equipment!','🙌');navigate('sports')}}
+
+/* ---------- medical ---------- */
+function medicalPage(){
+return `<div class="sosbanner"><div><h3>🚨 Need help right now?</h3><p>Alert the warden immediately. If someone is in immediate danger, also call <b>112</b> or campus security.</p></div><button class="sosbtn" onclick="emergencyHelp()">🚨 EMERGENCY HELP</button></div>
+<div class="helpline"><a href="tel:112"><b>112</b>National emergency</a><a href="tel:108"><b>108</b>Ambulance</a><a href="tel:1800891416"><b>14416</b>Tele-MANAS mental health</a></div>
+<div class="grid2" style="margin-top:16px"><section class="panel"><h3>Tell us what’s going on</h3><div class="sub">Type it, or use your voice. Only authorized staff should see this request.</div>
+<div class="field"><label>What do you need?</label><div class="chips">${['Medical assistance','Request medical leave','Emotional support','Other urgent concern'].map(k=>`<button class="chip ${medKind===k?'on':''}" onclick="medKind='${k}';keepMed()">${k}</button>`).join('')}</div></div>
+<div class="field"><label>How urgent is it?</label><div class="chips"><button class="chip ${medUrgency==='Routine'?'on':''}" onclick="medUrgency='Routine';keepMed()">🟢 Routine</button><button class="chip soon ${medUrgency==='Soon'?'on':''}" onclick="medUrgency='Soon';keepMed()">🟠 Soon</button><button class="chip urgent ${medUrgency==='Urgent'?'on':''}" onclick="medUrgency='Urgent';keepMed()">🔴 Urgent</button></div></div>
+<div class="field"><label>Describe your concern (optional)</label><textarea id="medText" placeholder="Share only what feels necessary..."></textarea></div>
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button class="btn softbtn" id="voiceBtn" onclick="toggleVoice()">🎙️ Record voice note</button><span id="voiceState" class="muted" style="font-size:12px">No voice note yet</span></div>
+<div class="notice">🔒 Medical details are sensitive. Notes stay in this browser session only — avoid entering real medical records here.</div>
+<button class="btn primary" onclick="submitMedical(false)">Send private request →</button></section>
+<section class="panel"><h3>Your support requests 💗</h3><div class="sub">Status updates appear here.</div>${medical.map(m=>`<div class="record"><strong>${m.type} <span class="status ${statusClass(m.status)}">${m.status}</span></strong><small>${m.time} · ${m.mode}</small><p style="font-size:12px">${esc(m.summary)}</p></div>`).join('')||'<p class="muted">No requests yet. If you need help, it’s okay to ask.</p>'}<div class="notice">If symptoms may be urgent, contact a qualified medical professional or emergency services. This app does not diagnose or triage.</div></section></div>`}
+let medDraft='';function keepMed(){const t=$('medText');medDraft=t?t.value:'';navigate('medical');if($('medText'))$('medText').value=medDraft}
+let voiceRecorded=false,recognition=null;
+function toggleVoice(){if(voiceRecorded){voiceRecorded=false;$('voiceState').textContent='Voice note cleared';$('voiceBtn').textContent='🎙️ Record voice note';return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Voice input isn’t supported in this browser. Type instead, or use your keyboard’s mic.','🎙️');return}recognition=new SR();recognition.lang='en-IN';recognition.interimResults=false;recognition.onstart=()=>{$('voiceBtn').textContent='⏹ Listening…';$('voiceState').textContent='Speak now'};recognition.onresult=e=>{$('medText').value=($('medText').value+' '+e.results[0][0].transcript).trim();voiceRecorded=true;$('voiceState').textContent='Voice note transcribed ✓';$('voiceBtn').textContent='🎙️ Record another note'};recognition.onerror=()=>{$('voiceState').textContent='Could not record — try typing';$('voiceBtn').textContent='🎙️ Record voice note'};recognition.onend=()=>{if(!voiceRecorded)$('voiceBtn').textContent='🎙️ Record voice note'};recognition.start()}
+function submitMedical(){const text=$('medText').value.trim(),urgent=medUrgency==='Urgent';medical.unshift({id:'MED-'+Math.floor(1000+Math.random()*8999),type:medKind,status:urgent?'URGENT — WARDEN ALERTED':'Submitted',time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),mode:voiceRecorded?'Voice transcription':'Text',summary:text||'Student requested private assistance.',urgent});if(urgent)notices.unshift({title:'Urgent medical help request',detail:`${user.name} needs a warden response`,emoji:'🚨',read:false});toast(urgent?'Urgent request sent to the warden.':'Private request submitted.',urgent?'🚨':'💗');voiceRecorded=false;medDraft='';navigate('medical')}
+function emergencyHelp(){modal('🚨 Emergency help',`<div class="sosbanner" style="margin-top:14px"><div><h3 style="font-size:18px">We’ll alert the warden now.</h3><p>This sends an in-app alert. It does not place a phone call.</p></div></div><div class="notice" style="background:#ffeef1;border-color:#ffc9d2;color:#b3233f"><b>In immediate danger?</b> Call <a href="tel:112" style="color:inherit;font-weight:900">112</a> now or contact campus security directly.</div><div class="field"><label>Optional note for warden</label><textarea id="emNote" placeholder="Where are you? What’s happening?"></textarea></div><div class="btnrow"><button class="btn primary" style="background:var(--red)" onclick="submitEmergencyNow()">🚨 Alert warden now</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`)}
+function submitEmergencyNow(){const note=$('emNote').value.trim();medical.unshift({id:'MED-'+Math.floor(1000+Math.random()*8999),type:'Emergency assistance',status:'WARDEN ALERT SENT',time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),mode:'Emergency button',summary:note||'Immediate contact requested.',urgent:true});notices.unshift({title:'🚨 Emergency help requested',detail:`${user.name} · Please contact student now`,emoji:'🚨',read:false});closeModal();toast('Emergency alert sent to the warden. Stay where you are if safe.','🚨');navigate('medical')}
+
+/* ---------- timetable ---------- */
+function timetablePage(){const done=classes.filter(c=>classStatus(c)==='Done').length;return `<div class="cards3"><div class="stat"><div class="num" data-count="${classes.length}">0</div><p>Classes today</p></div><div class="stat"><div class="num" style="font-size:16px;line-height:1.4">${nextClass()}</div><p>Up next</p></div><div class="stat"><div class="num" data-count="75" data-suf="%">0</div><p>Sample attendance</p></div></div><section class="panel" style="margin-top:16px"><h3>Your class timeline 📚</h3><div class="sub">Sample timetable — connect your college system for real records.</div>${classes.map(c=>brief(c[2],fmt(c[0])+' · '+c[3],c[4],classStatus(c))).join('')}<div class="notice">Attendance alone doesn’t show whether a classroom is empty. Green-campus reminders rely on reported room checks.</div></section>`}
+
+/* ---------- issues ---------- */
+function issuesPage(){const list=tickets.filter(t=>issueFilter==='All'||(issueFilter==='Open'?t.status!=='Resolved':t.status==='Resolved'));return `<div class="grid2"><section class="panel"><h3>Something needs fixing? 🧰</h3><div class="sub">Tell us where the problem is. We’ll make a ticket.</div><div class="field"><label>Issue category</label><select id="issueCat"><option>Electrical — light / fan</option><option>Water leakage</option><option>Wi-Fi / internet</option><option>Furniture / room damage</option><option>Cleanliness</option><option>Sports equipment</option><option>Other</option></select></div><div class="formgrid"><div class="field"><label>Building / block</label><input id="issueBlock" placeholder="e.g. Block B"></div><div class="field"><label>Room number</label><input id="issueRoom" placeholder="e.g. 204"></div></div><div class="field"><label>Priority</label><select id="issuePriority"><option>Low</option><option selected>Medium</option><option>High</option></select></div><div class="field"><label>What happened?</label><textarea id="issueText" placeholder="Describe the issue briefly..."></textarea></div><button class="btn primary" onclick="submitIssue()">Create ticket →</button></section>
+<section class="panel"><h3>Your tickets 🛠️</h3><div class="sub">Track progress without chasing people.</div><div class="tabs">${['All','Open','Resolved'].map(f=>`<button class="chip ${issueFilter===f?'on':''}" onclick="issueFilter='${f}';navigate('issues')">${f}</button>`).join('')}</div>${list.map(t=>`<div class="record"><strong>${esc(t.title)} <span class="status ${statusClass(t.status)}">${t.status}</span></strong><small>${t.id} · ${esc(t.room)} · ${t.category}</small><p style="font-size:12px;margin:8px 0 0">Priority: ${t.priority}</p>${t.status!=='Resolved'?`<div class="btnrow"><button class="btn softbtn" onclick="resolveTicket('${t.id}')">Confirm resolved ✓</button></div>`:'<p class="muted" style="font-size:12px;margin:8px 0 0">Thanks for helping campus improve!</p>'}</div>`).join('')||'<p class="muted">Nothing here.</p>'}</section></div>`}
+function submitIssue(){const title=$('issueText').value.trim(),block=$('issueBlock').value.trim()||'Unspecified block',room=$('issueRoom').value.trim()||'Room not specified';if(!title){toast('Add a short description so staff know what to fix.','⚠️');return}const t={id:'MT-'+Math.floor(2000+Math.random()*7999),title,category:$('issueCat').value,room:block+' · '+room,priority:$('issuePriority').value,status:'Submitted',by:user.name};tickets.unshift(t);requests.unshift({id:t.id,type:'Maintenance',title:t.title,status:'Pending',detail:t.room});toast('Ticket created. Staff can now pick it up.','🛠️');navigate('issues')}
+function resolveTicket(id){const t=tickets.find(x=>x.id===id);if(t){t.status='Resolved';toast('Thanks for confirming the fix!','✅');confetti(['✅','✨']);navigate('issues')}}
+
+/* ---------- energy ---------- */
+function greenScore(){return Math.min(100,70+energy.filter(e=>e.status==='Checked — Everything Off').length*6)}
+function energyPage(){const gs=greenScore();return `<section class="welcome" style="background:linear-gradient(115deg,#35b08e,#8fe0c3);color:#0f4a3d"><div><span class="pill" style="background:#ffffff70;color:#185e4d">🌱 GREEN CAMPUS CLUB</span><h2>Little checks. Big impact.</h2><p style="color:#1f6552">Help make sure empty rooms aren’t wasting power. Your check-in makes the estimate smarter.</p><button class="btn whitebtn" onclick="energyCheck()">I checked a room ✓</button></div><div class="welcome-art">🌿</div></section>
+<div class="cards3" style="margin-top:16px"><div class="stat"><div class="num" data-count="2.4" data-dec="1" data-suf=" kWh">0</div><p>Estimated savings</p></div><div class="stat"><div class="num" data-count="19.2" data-dec="2" data-pre="₹">0</div><p>Estimated cost saved</p></div><div class="stat"><div class="ringwrap">${ring(gs,gs,'#18a56f')}<p style="margin:0;font-size:12px" class="muted">Green<br>Score</p></div></div></div>
+<section class="panel" style="margin-top:16px"><h3>Room check alerts ⚡</h3><div class="sub">Reported reminders only — no live power sensor is connected.</div>${energy.map((e,i)=>`<div class="record"><strong>${esc(e.room)} <span class="status ${statusClass(e.status)}">${e.status}</span></strong><small>${esc(e.detail)}</small><div class="btnrow"><button class="btn primary" onclick="resolveEnergy(${i})">✓ Checked — Everything Off</button><button class="btn softbtn" onclick="reportEnergy(${i})">⚡ Report Still Running</button></div></div>`).join('')}<div class="notice">Estimates are illustrative, not measured consumption.</div></section>`}
+function energyCheck(){energy.unshift({room:'Student-reported room check',detail:'Checked by '+user.name+' · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),status:'Needs check'});toast('Thanks! A room check was added.','🌱');navigate('energy')}
+function resolveEnergy(i){energy[i].status='Checked — Everything Off';energy[i].detail='Checked by '+user.name+' · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});toast('Check-in recorded. Green score up!','🌿');confetti(['🌿','🍃','✨']);navigate('energy')}
+function reportEnergy(i){energy[i].status='Reported still running';energy[i].detail+=' · Escalated to facilities';notices.unshift({title:'Energy issue reported',detail:energy[i].room+' · facilities follow-up needed',emoji:'⚡',read:false});toast('Facilities have been notified.','⚡');navigate('energy')}
+
+/* ---------- notifications / admin ---------- */
+function notificationsPage(){return `<section class="panel"><h3>${unread()?'You have '+unread()+' new':'All caught up! 🎉'}</h3><div class="sub">In-app notifications</div>${notices.map((n,i)=>`<div class="briefitem" style="cursor:pointer;opacity:${n.read?.55:1}" onclick="notices[${i}].read=true;navigate('notifications')"><div class="miniicon">${n.emoji}</div><div class="grow"><strong>${esc(n.title)}</strong><small>${esc(n.detail)}</small></div>${n.read?'':'<span class="status bad" style="animation:none">NEW</span>'}</div>`).join('')||'<p class="muted">Nothing new.</p>'}<div class="btnrow"><button class="btn softbtn" onclick="notices.forEach(n=>n.read=true);toast('All marked as read.','✅');navigate('notifications')">Mark all as read</button><button class="btn ghost" onclick="notices=[];navigate('notifications')">Clear</button></div></section>`}
+function adminPage(){return `<div class="cards3"><div class="stat"><div class="num" data-count="248">0</div><p>Students</p></div><div class="stat"><div class="num" data-count="12">0</div><p>Hostel blocks / floors</p></div><div class="stat"><div class="num" data-count="${tickets.filter(t=>t.status!=='Resolved').length}">0</div><p>Open tickets</p></div></div><section class="panel" style="margin-top:16px"><h3>Quick access ⚙️</h3><div class="sub">Jump to any module.</div>${[['🪪','Gate pass requests','passes'],['🏸','Sports bookings','sports'],['🩺','Medical requests','medical'],['🌱','Energy alerts','energy'],['🛠️','Maintenance tickets','issues']].map(x=>`<div class="briefitem"><div class="miniicon">${x[0]}</div><div class="grow"><strong>${x[1]}</strong></div><button class="btn softbtn" onclick="navigate('${x[2]}')">Open →</button></div>`).join('')}<div class="notice">Production use needs a secure backend for authentication, role permissions, durable storage and messaging.</div></section>`}
+</script></body></html>
